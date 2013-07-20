@@ -24,6 +24,10 @@
 #include <string.h>
 #include <time.h>
 #include <pthread.h>
+#include <unistd.h>
+#include <iostream>
+
+using namespace std;
 
 /*----------------------------------------------------
  * The maximum length of a line in the input file

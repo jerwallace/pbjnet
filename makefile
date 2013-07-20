@@ -12,7 +12,7 @@ FLAGS = -O2 -std=c++0x
 
 EXE = task2
 OBJ = main.o cam.o misc.o
-SRC = main.c cam.c misc.c
+SRC = main.cpp cam.cpp misc.cpp
 H = defs.h ext.h cam.h misc.h
 
 
