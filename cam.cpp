@@ -25,36 +25,47 @@
    This will create  a variable called cam (of type cam_h)
    that can be accessed by any routine in this file.  */
 
-
+/*
+struct cam_t {
+	int port;
+d	ip_address_t address*;
+	cam_t next;
+} cam;
+*/
 class IPHashTable {
 
 private:
-	int* port;
+	int* ports;
 	unsigned int tableSize;
-	
-	unsigned int hashFunc(const ip_address_t* address) {
-		unsigned int hash = 5381;
-		for (unsigned int i = 0; i < (address->n1+address->n2+address->n3); i++)
-			hash = ((hash<<5)+hash) + i;
+
+	unsigned int hashFunc(const ip_address_t *address) {
+		unsigned int hash = address->n1+
+			address->n2+
+			address->n3+
+			address->n4*(address->n1*address->n2)*59; 
 		return hash % tableSize;
 	}
 
 	public:
+
 	IPHashTable(unsigned int size): tableSize(size) {
-		port = new int[tableSize];
+		ports = new int[tableSize];
 	}
+
 	~IPHashTable() {
-		delete[] port;
+		delete[] ports;
 	}
+
 	void set (const ip_address_t *address, const int& value) {
 		unsigned int index = hashFunc(address);
-		std::cout << "Set: "<<index << ": " << value;
-		port[index] = value;
+		std::cout << "Set: " << index << ": " << value;
+		ports[index] = value;
 	}
+
 	int get(const ip_address_t* address) {
 		unsigned int index = hashFunc(address);
 		std::cout << "Get: "<< index <<std::endl;
-		return port[index];
+		return ports[index];
 	}
 };
 
