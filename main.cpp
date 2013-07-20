@@ -14,7 +14,7 @@
    of the routing table, this will have no effect on the 
    performance, while for others, it will.  */
 
-#define NUMBER_ENTRIES_IN_ROUTING_TABLE 400
+#define NUMBER_ENTRIES_IN_ROUTING_TABLE 10
 
 /* The following indicate how many test cases we should
    run when performing timing measurements.  If you find it
@@ -22,7 +22,7 @@
    it runs too fast to get accurate measurements, you can make
    this bigger */
 
-#define NUMBER_LOOKUPS 500
+#define NUMBER_LOOKUPS 20
 
 /* This structure is used by test bench to remember what
    is stored in the routing table.  It is used to ensure that

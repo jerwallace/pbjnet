@@ -32,20 +32,31 @@ d	ip_address_t address*;
 	cam_t next;
 } cam;
 */
+class RoutingHashTable {
 struct IPNode {
     
-    ip_address_t *address;
+    const ip_address_t *address;
     int port;
-    IPNode *next = NULL;
+    IPNode *next;
     
     IPNode() {
-        address = NULL;
-        port = NULL;
+        this->address = NULL;
+        this->port = NULL;
+	this->next = NULL;
     }
     
     IPNode(const ip_address_t *address, const int& value) {
-        address = address;
-        port = value;
+        this->address = address;
+        this->port = value;
+	this->next = NULL;
+    }
+
+    void setNext(IPNode *node) {
+    	this->next = node;
+    }
+
+    int getPort() {
+    	return this->port;
     }
 };
 
@@ -65,7 +76,15 @@ unsigned int hashFunc(const ip_address_t *address) {
 
 
 IPNode* find(IPNode *node, const ip_address_t *address, bool getTail) {
-    
+
+    std::cout << "Looking up:" << address->n1 << address->n2;
+
+	if (getTail) {
+	std::cout << "Putting \n ";	
+     } else {
+	std::cout << "Getting \n";
+	}
+
     if (node==NULL) return NULL;
     else {
         if (node->address == address) {
@@ -97,11 +116,12 @@ void setPort(const ip_address_t *address, const int& value) {
     unsigned int index = hashFunc(address);
     IPNode *newNode = new IPNode(address,value);
     IPNode *parentNode = find(&nodes[index],address,true);
-    
+
     if (parentNode==NULL) {
         nodes[index] = *newNode;
     } else {
-        nodes[index].next = newNode;
+	cout << "Port #:" << parentNode.port;
+        nodes[index].setNext(newNode);
     }
     
 }
@@ -112,7 +132,7 @@ int getPort(const ip_address_t *address) {
     if (node==NULL) {
         return -1;
     } else {
-        return node->port;
+        return node->getPort();
     }
 }
 
