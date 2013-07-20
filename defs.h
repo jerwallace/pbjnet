@@ -18,12 +18,13 @@
  *
  *-------------------------------------------------*/
 
+#include <unordered_map>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <pthread.h>
-
+#include <iostream>
 /*----------------------------------------------------
  * The maximum length of a line in the input file
  *----------------------------------------------------*/
@@ -40,3 +41,5 @@
 #include "misc.h"
 #include "cam.h"
 #include "ext.h"
+
+using namespace std;
