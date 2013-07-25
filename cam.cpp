@@ -25,17 +25,11 @@
    This will create  a variable called cam (of type cam_h)
    that can be accessed by any routine in this file.  */
 
-/*
-struct cam_t {
-	int port;
-d	ip_address_t address*;
-	cam_t next;
-} cam;
-*/
 class RoutingHashTable {
+
 struct IPNode {
     
-    const ip_address_t *address;
+    ip_address_t *address;
     int port;
     IPNode *next;
     
@@ -45,7 +39,7 @@ struct IPNode {
 	this->next = NULL;
     }
     
-    IPNode(const ip_address_t *address, const int& value) {
+    IPNode(ip_address_t *address, int& value) {
         this->address = address;
         this->port = value;
 	this->next = NULL;
@@ -55,17 +49,28 @@ struct IPNode {
     	this->next = node;
     }
 
+
+
     int getPort() {
     	return this->port;
     }
+
+    void printNode() {
+	cout << this->address->n1;
+        cout << "." << this->address->n2;
+        cout << "." << this->address->n3;
+        cout << "." << this->address->n4;
+	cout << " | " << this->port;
+    }
+
 };
 
 private:
 
-IPNode *nodes;
+IPNode **nodes;
 unsigned int tableSize;
 
-unsigned int hashFunc(const ip_address_t *address) {
+unsigned int hashFunc(ip_address_t *address) {
     int prime = 59;
     unsigned int hash = address->n1+
     address->n2+
@@ -74,7 +79,7 @@ unsigned int hashFunc(const ip_address_t *address) {
     return hash % tableSize;
 }
 
-bool isSameIP(const ip_address_t *addr1, const ip_address_t *addr2) {
+bool isSameIP(ip_address_t *addr1, ip_address_t *addr2) {
 	if (addr1==NULL&&addr2==NULL){
 		cout << "Both addresses are null." << endl;
 		return TRUE;
@@ -84,6 +89,7 @@ bool isSameIP(const ip_address_t *addr1, const ip_address_t *addr2) {
 		cout << "One address is null." << endl;
 		return FALSE; }
 	else if (addr1->n1 == addr2->n1) {
+
 	   cout << "Addresses not null." << endl;
 	   if (addr1->n2 == addr2->n2) {
 	   	if (addr1->n3 == addr2->n3) {
@@ -92,6 +98,7 @@ bool isSameIP(const ip_address_t *addr1, const ip_address_t *addr2) {
 			}
 		}
            }
+
 	}
 	return FALSE;
 }
@@ -102,14 +109,14 @@ public:
 RoutingHashTable (unsigned int size): tableSize(size) {
     nodes = new IPNode*[tableSize];
     for (unsigned int i = 0; i < tableSize; i++) {
-	nodes[i] = NULL;
+	nodes[i] = 0;
     } 
 }
 
 ~RoutingHashTable() {
     for (unsigned int i = 0; i < tableSize; i++) {
     	IPNode* node = nodes[i];
-	while (node != NULL) {
+	while (node != 0) {
 		IPNode* prev = node;
 		node = node->next;
 		delete node;
@@ -118,19 +125,20 @@ RoutingHashTable (unsigned int size): tableSize(size) {
     delete[] nodes;
 }
 
-void setPort(const ip_address_t *address, const int& value) {
+void setPort(ip_address_t *address, int& value) {
+
     unsigned int index = hashFunc(address);
     cout << "Assigning index:" << index << "-" << address->n1 <<  endl;
 
     IPNode *parent = NULL;
     IPNode *node = nodes[index];
 
-    while (node!=NULL&&isSameIP(address,node->address)) {
+    while (node!=0&&isSameIP(address,node->address)) {
 	parent = node;
 	node = node->next;
     }
 
-    if (node==NULL) {
+    if (node==0) {
 	node = new IPNode(address,value);
 	if (parent == NULL) {
         	nodes[index] = node;
@@ -143,12 +151,21 @@ void setPort(const ip_address_t *address, const int& value) {
 
 }
 
-int getPort(const ip_address_t *address) {
- 
+int getPort(ip_address_t *address) {
+
+    cout << "Finding address" << address->n1 << endl;
     unsigned int index = hashFunc(address);
+
+    cout << "It should be at index:" << index << endl;
     IPNode *node = nodes[index];
 
-    while (node!=NULL) {
+    node->printNode();
+
+    if (node!=0)
+	cout << "Addr found:" << node->port << endl;
+
+    while (node!=0) {
+	cout << "Found node:" << node->port << " at index "<< index << endl;
 	if (isSameIP(address,node->address)) {
         	return node->port;
         } else {
