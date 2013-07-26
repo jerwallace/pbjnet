@@ -44,10 +44,10 @@ public:
     HashNode* next() {
         return _next;
     }
-    void set_value(int value) {
+    void setValue(int value) {
         _value = value;
     }
-    void set_next(HashNode* next) {
+    void setNext(HashNode* next) {
         _next = next;
     }
  
@@ -63,16 +63,16 @@ private:
 class HashMap {
 public:
     HashMap() {
-        _table = new HashNode*[TABLE_SIZE];
+        table = new HashNode*[TABLE_SIZE];
         for (int i = 0; i < TABLE_SIZE; ++i)
-            _table[i] = 0;
+            table[i] = 0;
     }
     ~HashMap() {
         for (int i = 0; i < TABLE_SIZE; ++i) {
-            HashNode* entry = _table[i];
-            while (entry != 0) {
-                HashNode* prev = entry;
-                entry = entry->next();
+            HashNode* node = table[i];
+            while (node != 0) {
+                HashNode* prev = node;
+                node = node->next();
                 delete prev;
             }
         }
@@ -80,75 +80,75 @@ public:
  
     // Should be optimized according to specific needs
     int HashFunc(ip_address_t key) {
-        int newKey = (key.n1 + key.n2 + key.n3 + key.n4)*59;
-		return newKey % TABLE_SIZE;
+        int index = (key.n1 + key.n2 + key.n3 + key.n4)*59;
+		return index % TABLE_SIZE;
     }
  
-    int Get(ip_address_t key) {
-        int hash_val = HashFunc(key);
-        HashNode* entry = _table[hash_val];
+    int get(ip_address_t key) {
+        int index = HashFunc(key);
+        HashNode* node = table[index];
  
-        while (entry != 0) {
-            if (entry->key().n1 == key.n1 && entry->key().n2 == key.n2 && entry->key().n3 == key.n3 && entry->key().n4 == key.n4) {
-                return entry->value();
+        while (node != 0) {
+            if (node->key().n1 == key.n1 && node->key().n2 == key.n2 && node->key().n3 == key.n3 && node->key().n4 == key.n4) {
+                return node->value();
             }
-            entry = entry->next();
+            node = node->next();
         }
         return -1;
     }
  
-    void Put(ip_address_t key, int value) {
-        int hash_val = HashFunc(key);
-        HashNode* prev = 0;
-        HashNode* entry = _table[hash_val];
+    void put(ip_address_t key, int value) {
+        int index = HashFunc(key);
+        HashNode* parent = 0;
+        HashNode* node = table[index];
  
-        while (entry != 0 && (entry->key().n1 != key.n1 || entry->key().n2 != key.n2 || entry->key().n3 != key.n3 || entry->key().n4 != key.n4)) {
-            prev = entry;
-            entry = entry->next();
+        while (node != 0 && (node->key().n1 != key.n1 || node->key().n2 != key.n2 || node->key().n3 != key.n3 || node->key().n4 != key.n4)) {
+            parent = node;
+            node = node->next();
         }
  
-        if (entry == 0) {
-            entry = new HashNode(key, value);
-            if (prev == 0) {
-                _table[hash_val] = entry;
+        if (node == 0) {
+            node = new HashNode(key, value);
+            if (parent == 0) {
+                table[index] = node;
             } else {
-                prev->set_next(entry);
+                parent->setNext(node);
             }
         } else {
-            entry->set_value(value);
+            node->setValue(value);
         }
     }
- 
+
     void Remove(ip_address_t key) {
-        int hash_val = HashFunc(key);
-        HashNode* entry = _table[hash_val];
- 
-        HashNode* prev = 0;
-        while (entry != 0) {
-            if (entry->key().n1 == key.n1 && entry->key().n2 == key.n2 && entry->key().n3 == key.n3 && entry->key().n4 == key.n4) {
+        int index = HashFunc(key);
+        HashNode* node = table[index];
+        HashNode* parent = 0;
+
+        while (node != 0) {
+            if (node->key().n1 == key.n1 && node->key().n2 == key.n2 && node->key().n3 == key.n3 && node->key().n4 == key.n4) {
                 break;
             }
-            prev = entry;
-            entry = entry->next();
+            parent = node;
+            node = node->next();
         }
-        if (entry == 0)
+        if (node == 0)
             return;
         else {
-            if (prev == 0) {
-                _table[hash_val] = entry->next();
+            if (parent == 0) {
+                table[index] = node->next();
             } else {
-                prev->set_next(entry->next());
+                parent->setNext(node->next());
             }
-            delete entry; 
+            delete node; 
         }
     }
  
 private:
     // Hash table
-    HashNode** _table;
+    HashNode** table;
 };
 
-HashMap myMap;
+HashMap routingTable;
 
 void cam_init()
 {
@@ -158,12 +158,12 @@ void cam_init()
 void cam_add_entry(ip_address_t *address, int port)
 {
 	cout << "Attempting to add: " << address->n1 <<"."<< address->n2 <<"."<< address->n3 <<"."<< address->n4 << " - to " << port << "\n";	
-	myMap.Put(*address,port);
+	routingTable.put(*address,port);
 }
 
 int cam_lookup_address(ip_address_t *address)
 {
-	return myMap.Get(*address);
+	return routingTable.get(*address);
 }
 
 void cam_free()
