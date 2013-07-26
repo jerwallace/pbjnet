@@ -3,10 +3,9 @@
  *
  *  Global Header File
  *
- *  Sathish Gopalakrishnan
- *  University of British Columbia
+ *  Created by Sathish Gopalakrishnan 
+ *    University of British Columbia
  *
- *  This file contains definitions that everyone might need.
  *
  ******************************************************/
 
@@ -19,16 +18,13 @@
  *
  *-------------------------------------------------*/
 
+#include <unordered_map>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <pthread.h>
-#include <unistd.h>
 #include <iostream>
-
-using namespace std;
-
 /*----------------------------------------------------
  * The maximum length of a line in the input file
  *----------------------------------------------------*/
@@ -44,6 +40,6 @@ using namespace std;
 
 #include "misc.h"
 #include "cam.h"
-#include "switch.h"
-#include "harness.h"
 #include "ext.h"
+
+using namespace std;

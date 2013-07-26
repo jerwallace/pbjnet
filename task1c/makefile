@@ -10,10 +10,10 @@ LIB = -lpthread -lrt
 #FLAGS = -g
 FLAGS = -O2 -std=c++0x
 
-EXE = task3
-OBJ = main.o cam.o harness.o switch.o misc.o
-SRC = main.cpp cam.cpp harness.cpp switch.cpp misc.cpp
-H = defs.h ext.h cam.h harness.h switch.h misc.h
+EXE = task2
+OBJ = main.o cam.o misc.o
+SRC = main.cpp cam.cpp misc.cpp
+H = defs.h ext.h cam.h misc.h
 
 
 $(EXE): $(OBJ)
@@ -22,17 +22,11 @@ $(EXE): $(OBJ)
 main.o: main.cpp $(H)
 	$(CC) -c $(FLAGS) main.cpp 
 
-cam.o: cam.cpp $(H)
-	$(CC) -c $(FLAGS) cam.cpp 
-
 misc.o: misc.cpp $(H)
-	$(CC) -c $(FLAGS) misc.cpp 
+	$(CC) -c $(FLAGS) misc.cpp
 
-harness.o: harness.cpp $(H)
-	$(CC) -c $(FLAGS) harness.cpp 
-
-switch.o: switch.cpp $(H)
-	$(CC) -c $(FLAGS) switch.cpp 
+cam.o: cam.cpp $(H)
+	$(CC) -c $(FLAGS) cam.cpp
 
 clean:
-	rm -r *.o task3
+	rm -r *.o task2

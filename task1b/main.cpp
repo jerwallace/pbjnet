@@ -14,7 +14,7 @@
    of the routing table, this will have no effect on the 
    performance, while for others, it will.  */
 
-#define NUMBER_ENTRIES_IN_ROUTING_TABLE 10
+#define NUMBER_ENTRIES_IN_ROUTING_TABLE 40000
 
 /* The following indicate how many test cases we should
    run when performing timing measurements.  If you find it
@@ -22,7 +22,7 @@
    it runs too fast to get accurate measurements, you can make
    this bigger */
 
-#define NUMBER_LOOKUPS 20
+#define NUMBER_LOOKUPS 50000
 
 /* This structure is used by test bench to remember what
    is stored in the routing table.  It is used to ensure that
@@ -59,6 +59,7 @@ BOOL is_this_entry_in_the_table(my_version_of_the_table_t *table,
 
 main()
 {
+   int counter=0;
    int i;
    ip_address_t address;
    int port;
@@ -126,19 +127,23 @@ main()
       /* Choose a valid IP address at random */
 
       entry = random()%NUMBER_ENTRIES_IN_ROUTING_TABLE;
-
       /* Call your routine to look up the entry in the routing table
          (this is the part that you want to be as fast as possible */
 
       port = cam_lookup_address(
               &(my_version_of_the_table[entry].address));
 	
-	std::cout << "Port:" << port << "\n";
+	  std::cout<<"Looking up entry: "<< entry <<" Should be at port: "<< port <<endl;
       /* Make sure your routine returned the right value */
-
+	  
       if (port != my_version_of_the_table[entry].port) {
          printf("Error: cam_lookup_address returned the wrong output port.  You really need to fix this.\n");
       }
+	  else
+	  {
+	  std::cout<<"Found entry: "<< entry <<" at port: "<< my_version_of_the_table[entry].port <<endl;
+		counter++;
+	  }
    }
 
    /* Measure the end time */
@@ -151,6 +156,8 @@ main()
    accum = (double)(end_time.tv_sec - start_time.tv_sec) +
        (double)(end_time.tv_nsec - start_time.tv_nsec)/1000000000.0;
 
+	   float accuracy = counter/NUMBER_LOOKUPS;
+   std::cout<<"Accuracy rate: " << accuracy*100 << "% \n";
    printf("Time difference: %f seconds\n",accum);
    printf("That is %f microseconds per lookup\n",
                  1000.0 * 1000.0 * accum / NUMBER_LOOKUPS);
