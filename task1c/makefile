@@ -8,7 +8,7 @@ LIB = -lpthread -lrt
 
 #FLAGS = -Wall -Wpointer-arith -Wcast-qual -Wstrict-prototypes -O -D__USE_FIXED_PROTOTYPES__ -ansi -pedantic -Wmissing-prototypes -Wshadow -Wcast-align -D_POSIX_SOURCE
 #FLAGS = -g
-FLAGS = -O2 -std=c++0x
+FLAGS = -O2 -std=c++0x 
 
 EXE = task3
 OBJ = main.o cam.o harness.o switch.o misc.o
@@ -24,7 +24,7 @@ main.o: main.cpp $(H)
 
 cam.o: cam.cpp $(H)
 	$(CC) -c $(FLAGS) cam.cpp 
-
+	
 misc.o: misc.cpp $(H)
 	$(CC) -c $(FLAGS) misc.cpp 
 

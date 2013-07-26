@@ -13,8 +13,6 @@
 
 #include "defs.h"
 
-IPHashTable lookupTable(40000);
-
 void *switch_thread_routine(void *arg)
 {
 	while(!die)
@@ -35,7 +33,7 @@ void *switch_thread_routine(void *arg)
 				packet_copy(&(in_port[i].packet), &packet);
 				
 				/*lookup packet's appropriate output port using destination IP*/
-				to_port = lookupTable.get(packet.address);
+				to_port = cam_lookup_address(&packet.address);
 				
 				 packet_copy(&packet,&(out_port[to_port].packet));
 
@@ -57,13 +55,13 @@ void *switch_thread_routine(void *arg)
 
 void switch_init()
 {
-   
+
 }
 
 void switch_add_entry(ip_address_t *address,
                       int port)
 {
-   lookupTable.set(address,port);
+   cam_add_entry(address,port);
 }
 
 void switch_free()

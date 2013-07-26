@@ -25,9 +25,12 @@
    This will create  a variable called cam (of type cam_h)
    that can be accessed by any routine in this file.  */
 
+   
+   #include "HashEntry.h";
+
 // Configurable table size constant
 const int TABLE_SIZE = 40000;
-
+ 
 // Hash node class
 class HashNode {
 public:
@@ -157,16 +160,15 @@ void cam_init()
 
 void cam_add_entry(ip_address_t *address, int port)
 {
-	cout << "Attempting to add: " << address->n1 <<"."<< address->n2 <<"."<< address->n3 <<"."<< address->n4 << " - to " << port << "\n";	
-	myMap.Put(*address,port);
+	cout << "Attempting to add: " << address->n1 << " to " << port << endl;	
+	myMap.Put(address,port);
 }
 
 int cam_lookup_address(ip_address_t *address)
 {
-	return myMap.Get(*address);
+	return myMap.Get(address);
 }
 
 void cam_free()
 {
-	
 }

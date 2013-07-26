@@ -17,7 +17,7 @@ port_t in_port[4];
 port_t out_port[4];
 BOOL die;
 
-int main()
+main()
 {
    int i,status;
    pthread_t switch_thread_id;
@@ -76,7 +76,7 @@ int main()
    }
 
    while (!die) {
-      sleep(1);
+      //sleep(1);
    }
 
    printf("Main program is now done\n");

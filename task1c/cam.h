@@ -13,8 +13,7 @@
  *
  ******************************************************/
 
-
-void cam_init();
+ void cam_init();
 void cam_add_entry(ip_address_t *address, int port);
 int cam_lookup_address(ip_address_t *address);
 void cam_free();
