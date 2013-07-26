@@ -375,16 +375,13 @@ void *harness_thread_routine(void *arg)
    
    for (int i=0; i<4; i++)
    {
-		//while(out_port[i].port_queue.size()!=0)
-		//{
-		//	out_port[i].flag = TRUE;
-		//	receive_message_if_there_is_one(i);
-		//}
-		std::cout<<"left over packets in port "<< i << " is: " << out_port[i].port_queue.size() << endl;		
-   }
-
-   //std::cout<<"left over packets in port "<< i << " is: " << out_port[i].port_queue.size() << endl;
-   
+		while(out_port[i].port_queue.size()!=0)
+		{
+			out_port[i].flag = TRUE;
+			receive_message_if_there_is_one(i);
+		}
+	}
+	
    /* We are done, so set the DIE global variable.  The switch
       thread will see this and die */
    die = TRUE;
