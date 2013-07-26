@@ -213,7 +213,6 @@ void port_lock(port_t *port_ptr)
    }
 }
 
-
 /*-----------------------------------------------------------*
  *                                                           *
  *  This routine unlocks the mutex associated with a port.   *

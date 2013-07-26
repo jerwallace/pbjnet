@@ -70,6 +70,7 @@ typedef struct port_t {
    pthread_mutex_t mutex;  /* The mutex */
    packet_t packet;   /* Packet in this port */
    BOOL flag;   /* Whether the port contains a valid packet or not */
+   std::queue<packet_t> port_queue;
 } port_t;
 
 
@@ -171,6 +172,7 @@ void port_init(port_t *port_ptr);
  *-----------------------------------------------------------*/
 
 void port_lock(port_t *port_ptr);
+void queue_lock(std::queue<packet_t*> *thisQueue);
 
 /*-----------------------------------------------------------*
  *                                                           *
@@ -186,7 +188,7 @@ void port_lock(port_t *port_ptr);
  *-----------------------------------------------------------*/
 
 void port_unlock(port_t *port_ptr);
-
+void queue_unlock(std::queue<packet_t*> *thisQueue);
 
 
 

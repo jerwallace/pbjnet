@@ -100,7 +100,7 @@ static void send_message(int input_port)
    /* Lock the appropriate input port */
 
    port_lock(&(in_port[input_port]));
-
+   
    /* Copy the destination IP address to the "packet" variable */
 
    ip_address_copy(&(my_version_of_the_table[p].address), &(packet.address));
@@ -121,8 +121,9 @@ static void send_message(int input_port)
 
    /* Copy the packet to the port */
 
-   packet_copy(&packet,
-               &(in_port[input_port].packet));
+   //packet_copy(&packet, &(in_port[input_port].packet));
+   	
+	in_port[input_port].port_queue.push(packet);
 
    /* Set the flag to indicate that the port has a packet */
 
@@ -162,7 +163,7 @@ static BOOL receive_message_if_there_is_one(int output_port)
 
    /* Lock the output port */
  
-   port_lock(&(out_port[output_port]));
+   //port_lock(&(out_port[output_port]));
 
    /* If the output port flag is high, that means a packet is there. */
 
@@ -176,7 +177,12 @@ static BOOL receive_message_if_there_is_one(int output_port)
 
       /* Copy the packet into our local storage */
       
-      packet_copy(&(out_port[output_port].packet), &packet);
+      //packet_copy(&(out_port[output_port].packet), &packet);
+	  port_lock(&(out_port[output_port]));
+	  packet = out_port[output_port].port_queue.front();
+	  out_port[output_port].port_queue.pop();
+	  port_unlock(&(out_port[output_port]));
+	  
 
       /* Extract the payload */
 
@@ -211,7 +217,7 @@ static BOOL receive_message_if_there_is_one(int output_port)
 
    /* Unlock the port, because we are done */
 
-   port_unlock(&(out_port[output_port]));   
+   //port_unlock(&(out_port[output_port]));   
 
    return(retval);
 }
@@ -362,11 +368,23 @@ void *harness_thread_routine(void *arg)
       /* We exit the loop when we have sent all of our
          packets and we have not received any packets */
 
-      done = //(received == FALSE) &&  
+      done = (received == FALSE) &&  
              (num_sent >= NUMBER_PACKETS_TO_SEND);
 
    }
+   
+   for (int i=0; i<4; i++)
+   {
+		//while(out_port[i].port_queue.size()!=0)
+		//{
+		//	out_port[i].flag = TRUE;
+		//	receive_message_if_there_is_one(i);
+		//}
+		std::cout<<"left over packets in port "<< i << " is: " << out_port[i].port_queue.size() << endl;		
+   }
 
+   //std::cout<<"left over packets in port "<< i << " is: " << out_port[i].port_queue.size() << endl;
+   
    /* We are done, so set the DIE global variable.  The switch
       thread will see this and die */
    die = TRUE;
@@ -417,4 +435,8 @@ void harness_end()
    printf("Total packets dropped: %d\n", num_packets_sent- num_packets_received);
    printf("Percent packets dropped: %.2f\%\n", 100*
                (float)(num_packets_sent-num_packets_received)/(num_packets_sent));
+	for (int i=0; i<4; i++)
+	{
+		std::cout<<"left over packets in port "<< i << " is: " << out_port[i].port_queue.size() << endl;
+	}
 }

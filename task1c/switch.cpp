@@ -23,23 +23,28 @@ void *switch_thread_routine(void *arg)
 			{				
 				/* Port where packet should go to */
 				int to_port;
+				packet_t packet;
+				
+				/* Set the flag to false */
+				in_port[i].flag=FALSE;
 				
 				/* Lock the input port */
 				port_lock(&(in_port[i]));
-
-				/* Set the flag to false */
-				in_port[i].flag==FALSE;	
+				
+				//packet_copy(&(in_port[i].packet), &packet);
+				packet = in_port[i].port_queue.front();
+				
+				in_port[i].port_queue.pop();
+				/* Unlock the port */
+				port_unlock(&(in_port[i]));	
 				
 				/*lookup packet's appropriate output port using destination IP*/
-				to_port = cam_lookup_address(&(in_port[i].packet).address);
+				to_port = cam_lookup_address(&(packet.address));
 				
 				/* Lock the output port */
 				port_lock(&(out_port[to_port]));
-								
-				 packet_copy(&(in_port[i].packet),&(out_port[to_port].packet));
-				
-				/* Unlock the port */
-				port_unlock(&(in_port[i]));							
+				 //packet_copy(&packet,&(out_port[to_port].packet));									
+				out_port[to_port].port_queue.push(packet);
 				
 				/* Set the flag to indicate that the port has a packet */
 				out_port[to_port].flag = TRUE;
