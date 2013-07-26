@@ -26,7 +26,7 @@
    that can be accessed by any routine in this file.  */
 
 // Configurable table size constant
-const int TABLE_SIZE = 40000;
+const int TABLE_SIZE = NUMBER_ENTRIES_IN_ROUTING_TABLE;
 
 // Hash node class
 class HashNode {
@@ -79,12 +79,12 @@ public:
     }
  
     // Should be optimized according to specific needs
-    int HashFunc(ip_address_t key) {
+    int HashFunc(ip_address_t& key) {
         int index = (key.n1 + key.n2 + key.n3 + key.n4)*59;
 		return index % TABLE_SIZE;
     }
  
-    int get(ip_address_t key) {
+    int get(ip_address_t& key) {
         int index = HashFunc(key);
         HashNode* node = table[index];
  
@@ -97,7 +97,7 @@ public:
         return -1;
     }
  
-    void put(ip_address_t key, int value) {
+    void put(ip_address_t& key, int value) {
         int index = HashFunc(key);
         HashNode* parent = 0;
         HashNode* node = table[index];
@@ -119,7 +119,7 @@ public:
         }
     }
 
-    void Remove(ip_address_t key) {
+    void Remove(ip_address_t& key) {
         int index = HashFunc(key);
         HashNode* node = table[index];
         HashNode* parent = 0;
@@ -158,7 +158,7 @@ void cam_init()
 void cam_add_entry(ip_address_t *address, int port)
 {
 	cout << "Attempting to add: " << address->n1 <<"."<< address->n2 <<"."<< address->n3 <<"."<< address->n4 << " - to " << port << "\n";	
-	routingTable.put(*address,port);
+	routingTable.put(*address, port);
 }
 
 int cam_lookup_address(ip_address_t *address)

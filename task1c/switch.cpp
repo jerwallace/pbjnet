@@ -20,33 +20,32 @@ void *switch_thread_routine(void *arg)
 		for (unsigned int i = 0; i < 4; i++) 
 		{
 			if (in_port[i].flag==TRUE) 
-			{
-				//recieve_message_if_there_is_one(lookupTable.get(in_port[i].packet.payload));
-				
-				packet_t packet;   /* Used to store received packet */
-				int to_port;       /* Port where packet should go to */
+			{				
+				/* Port where packet should go to */
+				int to_port;
 				
 				/* Lock the input port */
 				port_lock(&(in_port[i]));
-				
-				/* Copy the packet into our local storage */
-				packet_copy(&(in_port[i].packet), &packet);
+
+				/* Set the flag to false */
+				in_port[i].flag==FALSE;	
 				
 				/*lookup packet's appropriate output port using destination IP*/
-				to_port = cam_lookup_address(&packet.address);
+				to_port = cam_lookup_address(&(in_port[i].packet).address);
 				
-				 packet_copy(&packet,&(out_port[to_port].packet));
-
+				/* Lock the output port */
+				port_lock(&(out_port[to_port]));
+								
+				 packet_copy(&(in_port[i].packet),&(out_port[to_port].packet));
+				
+				/* Unlock the port */
+				port_unlock(&(in_port[i]));							
+				
 				/* Set the flag to indicate that the port has a packet */
 				out_port[to_port].flag = TRUE;
-
+				
 				/* Unlock the port */
 				port_unlock(&(out_port[to_port]));
-				
-				packet_print(&packet);
-				
-				/* Set the flag to false */
-				in_port[i].flag==FALSE;
 			} 
 	   }
    }

@@ -76,7 +76,7 @@ main()
    }
 
    while (!die) {
-      //sleep(1);
+	  sleep(1);
    }
 
    printf("Main program is now done\n");
