@@ -31,36 +31,30 @@ struct IPNode {
     
     ip_address_t *address;
     int port;
-    IPNode *next;
+    IPNode* next;
     
     IPNode() {
         this->address = NULL;
         this->port = NULL;
-	this->next = NULL;
+	this->next = 0;
     }
     
     IPNode(ip_address_t *address, int& value) {
         this->address = address;
         this->port = value;
-	this->next = NULL;
+	this->next = 0;
     }
 
     void setNext(IPNode *node) {
     	this->next = node;
     }
 
-
+    IPNode* getNext() {
+	return this->next;
+    } 
 
     int getPort() {
     	return this->port;
-    }
-
-    void printNode() {
-	cout << this->address->n1;
-        cout << "." << this->address->n2;
-        cout << "." << this->address->n3;
-        cout << "." << this->address->n4;
-	cout << " | " << this->port;
     }
 
 };
@@ -80,6 +74,7 @@ unsigned int hashFunc(ip_address_t *address) {
 }
 
 bool isSameIP(ip_address_t *addr1, ip_address_t *addr2) {
+
 	if (addr1==NULL&&addr2==NULL){
 		cout << "Both addresses are null." << endl;
 		return TRUE;
@@ -130,17 +125,17 @@ void setPort(ip_address_t *address, int& value) {
     unsigned int index = hashFunc(address);
     cout << "Assigning index:" << index << "-" << address->n1 <<  endl;
 
-    IPNode *parent = NULL;
+    IPNode *parent = 0;
     IPNode *node = nodes[index];
 
-    while (node!=0&&isSameIP(address,node->address)) {
+    while (node!=0&&!isSameIP(address,node->address)) {
 	parent = node;
-	node = node->next;
+	node = node->getNext();
     }
 
     if (node==0) {
 	node = new IPNode(address,value);
-	if (parent == NULL) {
+	if (parent == 0) {
         	nodes[index] = node;
         } else {
 		parent->setNext(node);
@@ -151,52 +146,58 @@ void setPort(ip_address_t *address, int& value) {
 
 }
 
+int getSpot(ip_address_t *address) {
+	return nodes[hashFunc(address)]->port;
+}
+
 int getPort(ip_address_t *address) {
 
     cout << "Finding address" << address->n1 << endl;
-    unsigned int index = hashFunc(address);
-
-    cout << "It should be at index:" << index << endl;
-    IPNode *node = nodes[index];
-
-    node->printNode();
-
-    if (node!=0)
-	cout << "Addr found:" << node->port << endl;
+    IPNode *node = nodes[hashFunc(address)];
+`
+    if (node!=0) {
+        cout << "This node: ";
+	cout << node->address->n1 << endl;
+	cout << address->n1 << endl;
+    }
 
     while (node!=0) {
-	cout << "Found node:" << node->port << " at index "<< index << endl;
+	cout << "Found node at index " << endl;
 	if (isSameIP(address,node->address)) {
+		cout << "Returning port " << node->port;
         	return node->port;
         } else {
-        	node = node->next;
+        	node = node->getNext();
         }
     }
+
+    cout << "No node found" << endl;
     return -1;
 
 }
 
 };
 
-RoutingHashTable lookupTable(400);
+RoutingHashTable lookupTable(300);
 
-void cam_init()
-{
+void cam_init() {
 
 }
 
 void cam_add_entry(ip_address_t *address, int port)
 {
 	cout << "Attempting to add: " << address->n1 << " to "
- << port << endl;	
+ << port << endl;
 	lookupTable.setPort(address,port);
 }
 
 int cam_lookup_address(ip_address_t *address)
 {
-	return lookupTable.getPort(address);
+	cout << "Searching for:" << address->n1 << "." << address->n2;
+	return lookupTable.getSpot(address);
 }
 
 void cam_free()
 {
+
 }
