@@ -1,0 +1,6 @@
+Initializing the Routing Table
+Adding 40000 entries to the routing table
+Performing 50000 lookups
+Accuracy rate: 100% 
+Time difference: 0.030772 seconds
+That is 0.615434 microseconds per lookup
