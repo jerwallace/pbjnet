@@ -37,6 +37,8 @@ using namespace std;
 #define BUFFERLENGTH 400
 #define BIGINT (1e20)
 
+#define BUFFER_SIZE 64
+
 #define MAX(a,b)  ((a)>(b)?(a):(b))
 
 #define BOOL char

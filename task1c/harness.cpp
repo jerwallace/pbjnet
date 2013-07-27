@@ -123,7 +123,10 @@ static void send_message(int input_port)
 
    //packet_copy(&packet, &(in_port[input_port].packet));
    	
-	in_port[input_port].port_queue.push(packet);
+	if(in_port[input_port].port_queue.size()<=BUFFER_SIZE)
+	{
+		in_port[input_port].port_queue.push(packet);
+	}
 
    /* Set the flag to indicate that the port has a packet */
 
@@ -432,8 +435,4 @@ void harness_end()
    printf("Total packets dropped: %d\n", num_packets_sent- num_packets_received);
    printf("Percent packets dropped: %.2f\%\n", 100*
                (float)(num_packets_sent-num_packets_received)/(num_packets_sent));
-	for (int i=0; i<4; i++)
-	{
-		std::cout<<"left over packets in port "<< i << " is: " << out_port[i].port_queue.size() << endl;
-	}
 }
