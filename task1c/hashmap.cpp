@@ -16,7 +16,7 @@
  */
 class HashNode {
 public:
-
+    
     /**
      * Constructor initializes the hash map node.
      * @param key The IP Address to use as the key of the node.
@@ -67,6 +67,7 @@ public:
      * @param tableSize the size of the table.
      */
     HashMap(int size) : tableSize(size) {
+	biggestBucket = 0;
         table = new HashNode*[tableSize];
         for (int i = 0; i < tableSize; ++i)
             table[i] = 0;
@@ -105,18 +106,28 @@ public:
     }
 
     /**
+     * The biggest bucket in the hash map.
+     */
+    int getBiggestBucketSize() {
+	return biggestBucket;
+    }
+
+    /**
      * This method adds a new record to the hash map.
      * @param key The IP address key
      * @param value The port number for this address.
      */
     void put(ip_address_t& key, int value) {
         int index = hashFunc(key);
-        HashNode* parent = 0;
+        int numInBucket = 0;
+
+	HashNode* parent = 0;
         HashNode* node = table[index];
 
         while (node != 0 && (node->key().n1 != key.n1 || node->key().n2 != key.n2 || node->key().n3 != key.n3 || node->key().n4 != key.n4)) {
             parent = node;
             node = node->next();
+	    numInBucket++;
         }
 
         if (node == 0) {
@@ -124,11 +135,15 @@ public:
             if (parent == 0) {
                 table[index] = node;
             } else {
+		numInBucket++;
                 parent->setNext(node);
             }
         } else {
             node->setValue(value);
         }
+	
+	if (numInBucket > biggestBucket)
+		biggestBucket = numInBucket;
     }
 
     /**
@@ -167,10 +182,11 @@ private:
      * @param key The IP Address to create a hash index for.
      */
     int hashFunc(ip_address_t& key) {
-        int index = (key.n1 + key.n2 + key.n3 + key.n4)*59;
+        int index = (key.n1*67 + key.n2*97 + key.n3*83 + key.n4*61);
 		return index % tableSize;
     }
 
+    int biggestBucket;
     int tableSize;
     // The hash table.
     HashNode** table;

@@ -17,7 +17,7 @@
 #include "hashmap.cpp"
 
 // Configurable table size constant
-const int TABLE_SIZE = NUMBER_ENTRIES_IN_ROUTING_TABLE;
+const int TABLE_SIZE = 40000;
 
 HashMap routingTable(TABLE_SIZE);
 
@@ -28,7 +28,7 @@ void cam_init()
 
 void cam_add_entry(ip_address_t *address, int port)
 {
-	cout << "Attempting to add: " << address->n1 <<"."<< address->n2 <<"."<< address->n3 <<"."<< address->n4 << " - to " << port << "\n";
+	//cout << "Attempting to add: " << address->n1 <<"."<< address->n2 <<"."<< address->n3 <<"."<< address->n4 << " - to " << port << "\n";
 	routingTable.put(*address, port);
 }
 
@@ -39,5 +39,5 @@ int cam_lookup_address(ip_address_t *address)
 
 void cam_free()
 {
-    // Unused.
+	cout << "The largest bucket is: " << routingTable.getBiggestBucketSize() << endl;    
 }

@@ -39,5 +39,5 @@ int cam_lookup_address(ip_address_t *address)
 
 void cam_free()
 {
-    // Unused.
+	cout << "The largest bucket is: " << routingTable.getBiggestBucketSize() << endl;    
 }

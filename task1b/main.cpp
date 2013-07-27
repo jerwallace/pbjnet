@@ -59,13 +59,16 @@ BOOL is_this_entry_in_the_table(my_version_of_the_table_t *table,
 
 main()
 {
+
    int counter=0;
    int i;
    ip_address_t address;
    int port;
    int entry;
-   double accum;
-   struct timespec start_time, end_time;
+   double accum, looktime;
+   double worstLookupTime = 0.0;
+   double bestLookupTime = NULL;
+   struct timespec start_time, end_time, start_look, end_look;
    my_version_of_the_table_t my_version_of_the_table[NUMBER_ENTRIES_IN_ROUTING_TABLE];
    BOOL ok;
 
@@ -124,8 +127,12 @@ main()
 
    for(i=0;i<NUMBER_LOOKUPS;i++) {
 
-      /* Choose a valid IP address at random */
+     if (clock_gettime(CLOCK_REALTIME,&start_look) == -1) {
+        printf("Error reading clock\n");
+        exit(0);
+      }
 
+      /* Choose a valid IP address at random */
       entry = random()%NUMBER_ENTRIES_IN_ROUTING_TABLE;
       /* Call your routine to look up the entry in the routing table
          (this is the part that you want to be as fast as possible */
@@ -144,6 +151,22 @@ main()
 	  //std::cout<<"Found entry: "<< entry <<" at port: "<< my_version_of_the_table[entry].port <<endl;
 		counter++;
 	  }
+
+      if (clock_gettime(CLOCK_REALTIME,&end_look) == -1) {
+        printf("Error reading clock\n");
+        exit(0);
+      }
+     
+      looktime = ((double)(end_look.tv_sec - start_look.tv_sec) +
+       (double)(end_look.tv_nsec - start_look.tv_nsec)/1000000000.0)*1000000;
+      
+      if (bestLookupTime==NULL||looktime<bestLookupTime) {
+      	bestLookupTime = looktime;
+      }
+
+      if (looktime > worstLookupTime) {
+        worstLookupTime = looktime;
+      }
    }
 
    /* Measure the end time */
@@ -159,6 +182,8 @@ main()
 	   float accuracy = counter/NUMBER_LOOKUPS;
    std::cout<<"Accuracy rate: " << accuracy*100 << "% \n";
    printf("Time difference: %f seconds\n",accum);
+   printf("The worst lookup time was %f microseconds\n ",worstLookupTime);
+   printf("The best lookup time was %f microseconds\n",bestLookupTime);
    printf("That is %f microseconds per lookup\n",
                  1000.0 * 1000.0 * accum / NUMBER_LOOKUPS);
 

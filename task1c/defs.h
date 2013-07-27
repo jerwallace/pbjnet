@@ -50,4 +50,3 @@ using namespace std;
 #include "switch.h"
 #include "harness.h"
 #include "ext.h"
-#include "hashmap.h"
