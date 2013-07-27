@@ -6,10 +6,10 @@
  *  Sathish Gopalakrishnan
  *  University of British Columbia
  *
- *  This file contains the definitions for the test harness.  
- *	You probably don't need to change anything here, unless 
- *	you want to change something for testing purposes.  
- *	If you do change anything, make sure that when you are 
+ *  This file contains the definitions for the test harness.
+ *	You probably don't need to change anything here, unless
+ *	you want to change something for testing purposes.
+ *	If you do change anything, make sure that when you are
  *	done it works with the original test harness, since
  *  that is what we will use to mark your code.
  *
@@ -18,7 +18,7 @@
 #include "defs.h"
 
 /* This data structure is used to store a copy of what is
-   in the routing table.  This is simply an artifact of the 
+   in the routing table.  This is simply an artifact of the
    testing procedure.  It is used only to make sure we send
    valid packets into the switch, and to make sure the packets
    come out the right place.  To repeat: this is NOT part of
@@ -100,7 +100,7 @@ static void send_message(int input_port)
    /* Lock the appropriate input port */
 
    port_lock(&(in_port[input_port]));
-   
+
    /* Copy the destination IP address to the "packet" variable */
 
    ip_address_copy(&(my_version_of_the_table[p].address), &(packet.address));
@@ -110,7 +110,7 @@ static void send_message(int input_port)
       message came from */
 
    packet.payload = input_port +
-                    4*my_version_of_the_table[p].port + 
+                    4*my_version_of_the_table[p].port +
                     16*sequence_numbers[input_port];
 
    /* Update the sequence number corresponding to this input port (so the
@@ -122,7 +122,7 @@ static void send_message(int input_port)
    /* Copy the packet to the port */
 
    //packet_copy(&packet, &(in_port[input_port].packet));
-   	
+
 	if(in_port[input_port].port_queue.size()<=BUFFER_SIZE)
 	{
 		in_port[input_port].port_queue.push(packet);
@@ -165,7 +165,7 @@ static BOOL receive_message_if_there_is_one(int output_port)
    BOOL retval;       /* The value we will return (TRUE or FALSE) */
 
    /* Lock the output port */
- 
+
    //port_lock(&(out_port[output_port]));
 
    /* If the output port flag is high, that means a packet is there. */
@@ -179,13 +179,13 @@ static BOOL receive_message_if_there_is_one(int output_port)
       out_port[output_port].flag = FALSE;
 
       /* Copy the packet into our local storage */
-      
+
       //packet_copy(&(out_port[output_port].packet), &packet);
 	  port_lock(&(out_port[output_port]));
 	  packet = out_port[output_port].port_queue.front();
 	  out_port[output_port].port_queue.pop();
 	  port_unlock(&(out_port[output_port]));
-	  
+
 
       /* Extract the payload */
 
@@ -200,7 +200,7 @@ static BOOL receive_message_if_there_is_one(int output_port)
          the right port */
 
       from_port = payload & 3;
-      to_port = (payload / 4) & 3; 
+      to_port = (payload / 4) & 3;
       seq_num = (payload / 16);
 
       if (to_port != output_port) {
@@ -209,7 +209,7 @@ static BOOL receive_message_if_there_is_one(int output_port)
          printf("Discarding packet... this is probably an error you should fix\n");
       } else {
 
-         /* If it has come out of the right port, extract the sequence number 
+         /* If it has come out of the right port, extract the sequence number
             from the payload and set the appropriate 'received_message'  (see above) */
 
          received_message[from_port][seq_num] = TRUE;
@@ -220,7 +220,7 @@ static BOOL receive_message_if_there_is_one(int output_port)
 
    /* Unlock the port, because we are done */
 
-   //port_unlock(&(out_port[output_port]));   
+   //port_unlock(&(out_port[output_port]));
 
    return(retval);
 }
@@ -271,8 +271,8 @@ void harness_init()
    ip_address_t address;
    BOOL ok;
 
-   if (HARNESS_DEBUG) {   
-      printf("  setting up switch with routing table with %d entries\n", 
+   if (HARNESS_DEBUG) {
+      printf("  setting up switch with routing table with %d entries\n",
                 NUMBER_ENTRIES_IN_ROUTING_TABLE);
    }
 
@@ -326,7 +326,7 @@ void harness_init()
 
 /*------------------------------------------------------------*
  *                                                            *
- *  The test harness runs as a single thread.  This is the    * 
+ *  The test harness runs as a single thread.  This is the    *
  *  thread routine.  The thread will be set up in main.c.     *
  *  The thread has two purposes: to send packets at random    *
  *  through the input ports, and extract packets from the     *
@@ -342,12 +342,12 @@ void *harness_thread_routine(void *arg)
    int i;
    BOOL done, received;
 
-   done = FALSE; 
+   done = FALSE;
    num_sent = 0;
    while(!done) {
       printf("In harness routine: Number sent=%d\n", num_sent);
-      
- 
+
+
       /* Consider sending a message on each port */
 
       for(i=0;i<4;i++) {
@@ -371,11 +371,11 @@ void *harness_thread_routine(void *arg)
       /* We exit the loop when we have sent all of our
          packets and we have not received any packets */
 
-      done = (received == FALSE) &&  
+      done = (received == FALSE) &&
              (num_sent >= NUMBER_PACKETS_TO_SEND);
 
    }
-   
+
    for (int i=0; i<4; i++)
    {
 		while(out_port[i].port_queue.size()!=0)
@@ -384,7 +384,7 @@ void *harness_thread_routine(void *arg)
 			receive_message_if_there_is_one(i);
 		}
 	}
-	
+
    /* We are done, so set the DIE global variable.  The switch
       thread will see this and die */
    die = TRUE;
@@ -413,22 +413,22 @@ void harness_end()
    /* Look at each input port */
 
    for(i=0;i<4;i++) {
- 
-      /* Go through all messages that were sent into this 
+
+      /* Go through all messages that were sent into this
          input port.  For each, indicate whether the message
          was received or not.  */
 
       for(j=0;j<sequence_numbers[i];j++) {
          num_packets_sent ++;
          printf("port %d, seq %d  ",i,j);
-         if (received_message[i][j]) { 
+         if (received_message[i][j]) {
             num_packets_received++;
             printf("received\n");
 	 } else {
             printf("not received\n");
 	 }
       }
-   } 
+   }
 
    printf("Total packets sent: %d\n",num_packets_sent);
    printf("Total packets received: %d\n",num_packets_received);

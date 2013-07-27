@@ -11,7 +11,7 @@
 
 /* The following defines how many entries should be stored
    in the routing table at the start.  For some implementations
-   of the routing table, this will have no effect on the 
+   of the routing table, this will have no effect on the
    performance, while for others, it will.  */
 
 #define NUMBER_ENTRIES_IN_ROUTING_TABLE 40000
@@ -70,16 +70,16 @@ main()
    BOOL ok;
 
    /* Initalize the routing table by calling your routine */
-   
-   printf("Initializing the Routing Table\n");  
+
+   printf("Initializing the Routing Table\n");
    cam_init();
 
    /* Now go through and set up the routing table.  */
-   
+
    printf("Adding %d entries to the routing table\n", NUMBER_ENTRIES_IN_ROUTING_TABLE);
 
    for(i=0;i<NUMBER_ENTRIES_IN_ROUTING_TABLE;i++) {
- 
+
       /* Choose an IP address randomly */
 
       ok = FALSE;
@@ -94,7 +94,7 @@ main()
                                                      address.n3,
                                                      address.n4);
       }
- 
+
       /* Choose an output port randomly */
 
       port = random()%4;
@@ -116,7 +116,7 @@ main()
    if (clock_gettime(CLOCK_REALTIME,&start_time) == -1) {
        printf("Error reading clock\n");
        exit(0);
-   } 
+   }
 
    /* Perform the actual test */
 
@@ -132,16 +132,16 @@ main()
 
       port = cam_lookup_address(
               &(my_version_of_the_table[entry].address));
-	
-	  std::cout<<"Looking up entry: "<< entry <<" Should be at port: "<< port <<endl;
+
+	  //std::cout<<"Looking up entry: "<< entry <<" Should be at port: "<< port <<endl;
       /* Make sure your routine returned the right value */
-	  
+
       if (port != my_version_of_the_table[entry].port) {
          printf("Error: cam_lookup_address returned the wrong output port.  You really need to fix this.\n");
       }
 	  else
 	  {
-	  std::cout<<"Found entry: "<< entry <<" at port: "<< my_version_of_the_table[entry].port <<endl;
+	  //std::cout<<"Found entry: "<< entry <<" at port: "<< my_version_of_the_table[entry].port <<endl;
 		counter++;
 	  }
    }
@@ -151,7 +151,7 @@ main()
    if (clock_gettime(CLOCK_REALTIME,&end_time) == -1) {
        printf("Error reading clock\n");
        exit(0);
-   } 
+   }
 
    accum = (double)(end_time.tv_sec - start_time.tv_sec) +
        (double)(end_time.tv_nsec - start_time.tv_nsec)/1000000000.0;
@@ -161,6 +161,6 @@ main()
    printf("Time difference: %f seconds\n",accum);
    printf("That is %f microseconds per lookup\n",
                  1000.0 * 1000.0 * accum / NUMBER_LOOKUPS);
-                                     
+
    cam_free();
 }

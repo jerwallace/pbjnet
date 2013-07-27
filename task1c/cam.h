@@ -2,7 +2,7 @@
  *
  *  Routing Table Routines
  *
- *  Created by _________, University of British Columbia
+ *  Created by Peter Lee, Bahman Razmpa and Jeremy Wallace University of British Columbia
  *
  *  This file contains the prototypes for the routing
  *  table routines that you will create.  In addition,
@@ -13,7 +13,7 @@
  *
  ******************************************************/
 
- void cam_init();
+void cam_init();
 void cam_add_entry(ip_address_t *address, int port);
 int cam_lookup_address(ip_address_t *address);
 void cam_free();

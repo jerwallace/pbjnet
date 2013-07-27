@@ -12,9 +12,9 @@
 
 
 /*-------------------------------------------------
- * 
+ *
  * These are some standard definitions.  Including
- * them here means that the include statements don't 
+ * them here means that the include statements don't
  * have to be repeated in each file.
  *
  *-------------------------------------------------*/
@@ -33,7 +33,7 @@ using namespace std;
 /*----------------------------------------------------
  * The maximum length of a line in the input file
  *----------------------------------------------------*/
- 
+
 #define BUFFERLENGTH 400
 #define BIGINT (1e20)
 
@@ -50,3 +50,4 @@ using namespace std;
 #include "switch.h"
 #include "harness.h"
 #include "ext.h"
+#include "hashmap.h"
